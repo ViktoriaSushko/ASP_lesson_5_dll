@@ -10,15 +10,30 @@ namespace ASP_lesson_5.Pages.Cars
         private readonly IRepository<Car> repository;
 
         public IEnumerable<Car>? Cars { get; set; }
+        public IEnumerable<string>? Manufacturers { get; set; } = new List<string>();
+        public string? SelectedManufacturer { get; set; }
+        public int? SelectedYear { get; set; }
 
         public IndexModel(IRepository<Car> repository)
         {
             this.repository = repository;
 
         }
-        public void OnGet()
+        public async Task OnGet(string? manufacturer, int? year)
         {
-            Cars = repository.GetAll();
+            var cars = await repository.GetAll();
+            Manufacturers = cars.Select(c => c.Manufacturer).Distinct().ToList();
+            this.Cars = cars;
+            if(manufacturer is not null && manufacturer != "All")
+            {
+                this.Cars = Cars.Where(c => c.Manufacturer == manufacturer).ToList();
+                this.SelectedManufacturer = manufacturer;
+            }
+            if(year is not null)
+            {
+                this.Cars = Cars.Where(c => c.Year == year).ToList();
+                this.SelectedYear = year;
+            }
         }
 
     }

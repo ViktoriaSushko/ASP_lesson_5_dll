@@ -6,7 +6,16 @@
     <div class="row">
         <div class="col-3"></div>
         <div class="col">
-            <form method="post">
+            <form method="post" enctype="multipart/form-data">
+                @if (Model.Car?.Image is not null)
+                {
+                     <div class="mb-3">
+                    <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Car.Image)" width="150" height="100" style="object-fit:cover;" />
+                </div>
+                }
+                <div class="mb-3">
+                   <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                </div>
                 <div class="mb-3">
                     <label for="manufacturer" class="form-label">Manufacturer</label>
                     <input type="text" class="form-control" id="manufacturer" name="manufacturer" value="@Model?.Car?.Manufacturer">
@@ -17,12 +26,13 @@
                 </div>
                 <div class="mb-3">
                     <label for="year" class="form-label">Year</label>
-                    <input type="number" class="form-control" id="year" name="year" value="@Model?.Car?.Year">
+                    <input type="number" class="form-control" id="year" name="year" value="@Model?.Car?.Year" min="1970" max="@DateTime.Now.Year">
                 </div>
                 <div class="mb-3">
                     <label for="manufacturer" class="form-label">Price</label>
                     <input type="text" class="form-control" id="price" name="price" value="@Model?.Car?.Price">
                 </div>
+
                 <button type="submit" class="btn btn-primary">Save</button>
             </form>
 

@@ -4,6 +4,27 @@
 @{
 }
 <div class="container">
+    <form>
+        <div class="mb-3">
+            <label for="manufacturer" class="form-label">Manufacturers:</label>
+            <select name="manufacturer" id="manufacturer" class="form-select">
+                <option value="@(null)">All</option>
+                @foreach (var manufacturer in Model.Manufacturers)
+                    {
+                    <!option value="@manufacturer" @(manufacturer==Model.SelectedManufacturer?"selected":"")>@manufacturer</!option>
+                    }
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="year" class="form-label">Year:</label>
+            <input type="number" name="year" id="year" class="form-control" min="1990" max="@DateTime.Now.Year" value="@(Model.SelectedYear!=null?Model.SelectedYear:1990)"/>
+                         
+        </div>
+        <div class="mb-3">
+            <input type="submit" class="btn-outline-info" value="select"/>
+        </div>
+    </form>
+
     <div class="row">
         <a href="/cars/create">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
@@ -18,6 +39,7 @@
                 <thead>
                     <tr>
                         <th>Id</th>
+                        <th>Image</th>
                         <th>Manufacturer</th>
                         <th>Model</th>
                         <th>Year</th>
@@ -33,6 +55,12 @@
                         {
                             <tr>
                                 <td>@car.Id</td>
+                                <td>
+                                    @if(car.Image is not null)
+                                    {
+                                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(car.Image)" width="150" height="100" style="object-fit:cover;"/>
+                                    }
+                                </td>
                                 <td>@car.Manufacturer</td>
                                 <td>@car.Model</td>
                                 <td>@car.Year</td>

@@ -13,21 +13,32 @@ namespace ASP_lesson_5.Pages.Cars
         {
             this.repository = repository;
         }
-        public IActionResult OnGet(int? id)
+        public async Task<IActionResult> OnGet(int? id)
         {
             if (id is null)
                 return NotFound();
-            this.Car = repository.Get(id.Value);
+            this.Car = await repository.Get(id.Value);
             return Page();
         }
         [IgnoreAntiforgeryToken]
-        public IActionResult OnPost(Car? editCar)
+        public async Task<IActionResult> OnPost(Car? car, IFormFile? image)
         {
-            if (editCar == null)
+            var oldCar = await repository.Get(car.Id);
+            if (oldCar == null)
             {
                 return NotFound();
             }
-            repository.Update(editCar);
+            if (image!= null)
+            {
+                using var memoryStream = new MemoryStream();
+                await image.CopyToAsync(memoryStream);
+                car.Image = memoryStream.ToArray();
+            }
+            else
+            {
+                car.Image = oldCar.Image;
+            }
+            await repository.Update(car);
             return RedirectToPage("Index");
         }
     }

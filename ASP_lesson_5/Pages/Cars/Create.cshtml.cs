@@ -15,23 +15,17 @@ namespace ASP_lesson_5.Pages.Cars
         public void OnGet()
         {
         }
-        //public IActionResult OnPost(string manufacturer, string model,int year, double price)
-        //{
-        //    Car car = new Car
-        //    {
-        //        Manufacturer = manufacturer,
-        //        Model=model,
-        //        Year=year,
-        //        Price=price
-        //    };
-        //    repository.Add(car);
-        //    return RedirectToPage("Index");
-        //}
-        //2
+       
         [IgnoreAntiforgeryToken]
-        public IActionResult OnPost(Car car)
+        public async Task<IActionResult> OnPost(Car car,IFormFile? image)
         {
-            repository.Add(car);
+            if (image != null)
+            {
+                using var memoryStream = new MemoryStream();
+                await image.CopyToAsync(memoryStream);
+                car.Image = memoryStream.ToArray();
+            }
+            await repository.Add(car);
 
             return RedirectToPage("Index");
         }

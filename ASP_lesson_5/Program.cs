@@ -1,12 +1,16 @@
-﻿using CarLibrary.Models;
+﻿using CarLibrary.DataContext;
+using CarLibrary.Models;
 using CarLibrary.Services.Abstract;
 using CarLibrary.Services.Implementation;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddSingleton<IRepository<Car>, InMemoryCarRepository>();
+builder.Services.AddScoped<IRepository<Car>, EFCarRepository>();
+string? conStr = builder.Configuration.GetConnectionString("MSSQLCarsDb");
+builder.Services.AddDbContext<CarContext>(optionBuilder => optionBuilder.UseSqlServer(conStr));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
